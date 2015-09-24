@@ -1,0 +1,47 @@
+#define TBLOCK_SIZE 512
+
+
+
+template <unsigned int tblock_size>
+__global__ void reduce(int *input, int *output, int size)
+{
+    __shared__ int smem[TBLOCK_SIZE];
+    int tid = threadIdx.x;
+    int idx = tid + blockDim.x * blockIdx.x * ( DB_PER_TB - 1 );
+  
+
+    int *block_data = input + blockDim.x * blockIdx.x * DB_PER_TB;
+
+    int temp_sum = 0;
+    if (idx + (DB_PER_TB-1)*blockDim.x < size)
+    {
+	//+1 DATA_BLOCK_UNROLLING
+    }
+    smem[tid] = temp_sum;
+    __syncthreads();
+    
+
+    if (TBLOCK_SIZE >= 1024 && tid < 512) block_data[tid] += block_data[tid+512];
+    __syncthreads();
+    if (TBLOCK_SIZE >= 512 && tid < 256) block_data[tid] += block_data[tid+256];
+    __syncthreads();
+    if (TBLOCK_SIZE >= 256 && tid < 128) block_data[tid] += block_data[tid+128];
+    __syncthreads();
+    if (TBLOCK_SIZE >= 128 && tid < 64) block_data[tid] += block_data[tid+64];
+    __syncthreads();
+
+
+    if (tid < 32)
+    {
+	volatile int *vmem = smem;
+	vmem[tid] +=  vmem[tid+32];
+	vmem[tid] +=  vmem[tid+16];
+	vmem[tid] +=  vmem[tid+8];
+	vmem[tid] +=  vmem[tid+4];
+	vmem[tid] +=  vmem[tid+2];
+	vmem[tid] +=  vmem[tid+1];
+    }
+
+
+    if (tid==0) output[blockIdx.x] = smem[0];
+}
