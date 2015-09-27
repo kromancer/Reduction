@@ -8,12 +8,12 @@ TEM_DIR=./.src/
 EXE_DIR=./.exe/
 REP_DIR=./.rep/
 STATS=${REP_DIR}stats.csv
-CUDA_ARC=sm_50
+CUDA_ARC=sm_20
 
 mkdir ${TEM_DIR} ${EXE_DIR} ${REP_DIR} 2> discard
 printf "Unroll_Depth , Execution_Time\n" > ${STATS}
 
-min=99999999
+
 for i in {1..20} 
 do
     echo "Unrolling $i"
