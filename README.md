@@ -1,7 +1,8 @@
 Reduction
 =========
 
-The most efficient CUDA implementation of the Reduction pattern I could compose, running under a small autotuning framework.
+An autotunning CUDA implementation of the Reduction pattern I could compose, running under a small autotuning framework.
+I based my approach on [Professional CUDA C Programming 1st Edition](https://www.amazon.com/Professional-CUDA-Programming-John-Cheng/dp/1118739329/ref=pd_bxgy_14_img_2/163-0340861-1801263?ie=UTF8&psc=1&refRID=51JY2YVCC8W0Y0PQWNE7)
 
 You need to have:
   * R 
